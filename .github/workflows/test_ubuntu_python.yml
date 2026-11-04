@@ -54,6 +54,15 @@ jobs:
         source .ci/ubuntu_ci.sh
         export KIVY_DEPS_ROOT=$(pwd)/kivy-dependencies
         install_kivy
+    - name: Test ffpyplayer audio on Python 3.14
+      if: matrix.python == '3.14'
+      env:
+        KIVY_AUDIO: ffpyplayer
+        KIVY_NO_ARGS: '1'
+      run: |
+        # Exercise the provider while the Python 3.14 extras still exclude it.
+        python3 -m pip install 'ffpyplayer==4.5.4'
+        python3 -m pytest --maxfail=10 --timeout=300 --cov=kivy --cov-branch --cov-report= kivy/tests/test_audio.py
     - name: Test Kivy
       run: |
         source .ci/ubuntu_ci.sh
